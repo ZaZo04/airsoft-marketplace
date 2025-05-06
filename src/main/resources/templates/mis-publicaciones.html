@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Mis publicaciones</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header>
+  <h1>Mis productos publicados</h1>
+  <nav style="text-align:center;">
+    <a href="/">Inicio</a> |
+    <a href="/productos">Productos</a> |
+    <a href="/publicar">Publicar</a> |
+    <a href="/favoritos">Favoritos</a> |
+    <a href="/mis-publicaciones">Mis publicaciones</a> |
+    <a href="/logout">Logout</a>
+  </nav>
+</header>
+
+<main style="max-width: 800px; margin: 30px auto;">
+  <div th:if="${#lists.isEmpty(misProductos)}">
+    <p style="text-align:center;">Aún no has publicado ningún producto.</p>
+  </div>
+
+  <div th:each="producto : ${misProductos}" style="border: 1px solid #444; padding: 20px; margin-bottom: 20px; border-radius: 10px;">
+    <h3 th:text="${producto.titulo}">Título</h3>
+    <p th:text="'Precio: ' + ${producto.precio} + ' €'"></p>
+    <p th:text="'Categoría: ' + ${producto.categoria}"></p>
+    <p th:text="'Estado: ' + ${producto.estado}"></p>
+    <p th:text="'Descripción: ' + ${producto.descripcion}"></p>
+
+    <img th:src="${producto.imagenUrl}" alt="Imagen producto" style="max-width:100%; margin-top:10px;" th:if="${producto.imagenUrl != null}"/>
+
+    <!-- Botón para eliminar producto -->
+    <form th:action="@{'/eliminar-producto/' + ${producto.id}}" method="post" style="margin-top: 10px;">
+      <button type="submit">🗑️ Eliminar</button>
+    </form>
+
+    <!-- Botón para editar producto (no funcional todavía) -->
+    <form th:action="@{'/editar-producto/' + ${producto.id}}" method="get" style="margin-top: 10px;">
+      <button type="submit">✏️ Editar</button>
+    </form>
+  </div>
+</main>
+
+</body>
+</html>

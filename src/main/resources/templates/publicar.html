@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Publicar producto</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header>
+  <h1>Publicar producto</h1>
+  <nav style="text-align:center;">
+    <a href="/">Inicio</a> |
+    <a href="/productos">Productos</a> |
+    <a href="/publicar">Publicar</a> |
+    <a href="/favoritos">Favoritos</a> |
+    <a href="/mis-publicaciones">Mis publicaciones</a> |
+    <a href="/logout">Logout</a>
+  </nav>
+</header>
+
+<main style="max-width: 500px; margin: auto;">
+  <form th:action="@{/publicar}" method="post">
+    <input type="text" name="titulo" placeholder="Título del producto" required />
+    <input type="number" name="precio" step="0.01" placeholder="Precio" required />
+    <select name="Categoría" required>
+      <option value="">Selecciona una categoría</option>
+      <option value="réplica">Réplica</option>
+      <option value="ropa">Ropa táctica</option>
+      <option value="accesorios">Accesorios</option>
+    </select>
+    <input type="text" name="estado" placeholder="Estado (nuevo, usado...)" required />
+    <input type="text" name="imagenUrl" placeholder="URL de la imagen" />
+
+    <textarea name="descripcion" placeholder="Descripción..." rows="4" required></textarea>
+
+    <button type="submit">Publicar</button>
+  </form>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Productos</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Productos publicados</h1>
+    <nav style="text-align:center;">
+      <a href="/">Inicio</a> |
+      <a href="/productos">Productos</a> |
+      <a href="/publicar">Publicar</a> |
+      <a href="/favoritos">Favoritos</a> |
+      <a href="/mis-publicaciones">Mis publicaciones</a> |
+      <a href="/logout">Logout</a>
+    </nav>
+  </header>
+
+  <!-- Formulario de filtros -->
+  <form method="get" th:action="@{/productos}" style="text-align:center; margin-top:20px;">
+    <input type="text" name="nombre" placeholder="Buscar por nombre..." />
+    <select name="categoria">
+      <option value="">Todas las categorías</option>
+      <option value="réplica">Réplica</option>
+      <option value="ropa">Ropa táctica</option>
+      <option value="accesorios">Accesorios</option>
+    </select>
+    <button type="submit">Filtrar</button>
+  </form>
+
+  <!-- Lista de productos -->
+  <div style="max-width:800px; margin:40px auto;">
+    <div th:each="producto : ${productos}" class="producto" style="border: 1px solid #444; padding: 20px; margin-bottom: 20px; border-radius: 10px;">
+      <h2 th:text="${producto.titulo}">Título del producto</h2>
+      <p th:text="'Precio: ' + ${producto.precio} + ' €'">Precio</p>
+      <p th:text="'Categoría: ' + ${producto.categoria}">Categoría</p>
+      <p th:text="'Estado: ' + ${producto.estado}">Estado</p>
+      <p th:text="'Publicado por: ' + ${producto.usuario.email}">Vendedor</p>
+
+      <img th:src="${producto.imagenUrl}" alt="Imagen producto" style="max-width:100%; margin-top:10px;" th:if="${producto.imagenUrl != null}"/>
+
+      <!-- Mostrar botón "Comprar" solo si el usuario está logueado y no es el dueño -->
+      <form th:action="@{'/comprar/' + ${producto.id}}" method="post"
+            th:if="${session.usuarioLogueado != null and session.usuarioLogueado.id != producto.usuario.id}">
+        <button type="submit" style="margin-top: 10px;">Comprar</button>
+      </form>
+
+      <div th:if="${session.usuarioLogueado != null}">
+
+        <!-- Si el producto NO está en favoritos -->
+        <div th:if="${#lists.contains(favoritosUsuario.?[producto], producto)} == false">
+          <form th:action="@{'/favoritos/' + ${producto.id}}" method="post">
+            <button type="submit" style="margin-top: 10px;">❤️ Añadir a favoritos</button>
+          </form>
+        </div>
+      
+        <!-- Si el producto SÍ está en favoritos -->
+        <div th:each="fav : ${favoritosUsuario}" th:if="${fav.producto.id == producto.id}">
+          <form th:action="@{'/favoritos/eliminar/' + ${fav.id}}" method="post">
+            <button type="submit" style="margin-top: 10px;">💔 Eliminar de favoritos</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

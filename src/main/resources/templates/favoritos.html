@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Mis favoritos</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<header>
+  <h1>Mis productos favoritos</h1>
+  <nav style="text-align:center;">
+    <a href="/">Inicio</a> |
+    <a href="/productos">Productos</a> |
+    <a href="/publicar">Publicar</a> |
+    <a href="/favoritos">Favoritos</a> |
+    <a href="/mis-publicaciones">Mis publicaciones</a> |
+    <a href="/logout">Logout</a>
+  </nav>
+</header>
+
+<main style="max-width: 800px; margin: 30px auto;">
+  <div th:if="${#lists.isEmpty(favoritos)}">
+    <p style="text-align:center;">No has guardado productos como favoritos aún.</p>
+  </div>
+
+  <div th:each="fav : ${favoritos}" style="border: 1px solid #444; padding: 20px; margin-bottom: 20px; border-radius: 10px;">
+    <h3 th:text="${fav.producto.titulo}">Título del producto</h3>
+    <p th:text="'Publicado por: ' + ${fav.producto.usuario.email}"></p>
+    <p th:text="'Precio: ' + ${fav.producto.precio} + ' €'"></p>
+    <p th:text="'Categoría: ' + ${fav.producto.categoria}"></p>
+    <p th:text="'Estado: ' + ${fav.producto.estado}"></p>
+    <p th:text="'Descripción: ' + ${fav.producto.descripcion}"></p>
+    
+
+
+    <img th:src="${fav.producto.imagenUrl}" alt="Imagen producto" style="max-width:100%; margin-top:10px;" th:if="${fav.producto.imagenUrl != null}"/>
+
+    <!-- Botón de compra desde favoritos -->
+    <form th:action="@{'/comprar/' + ${fav.producto.id}}" method="post"
+          th:if="${session.usuarioLogueado != null and session.usuarioLogueado.id != fav.producto.usuario.id}">
+      <button type="submit" style="margin-top: 10px;">Comprar</button>
+    </form>
+
+    <!-- Botón para eliminar de favoritos -->
+    <form th:action="@{'/favoritos/eliminar/' + ${fav.id}}" method="post" style="margin-top: 10px;">
+        <button type="submit">💔 Eliminar de favoritos</button>
+    </form>
+  </div>
+</main>
+
+</body>
+</html>
